@@ -11,11 +11,8 @@ variable "base_domain" {
 }
 
 variable "ssh_keys" {
-  type = list(string)
-  default = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFLCH/nL+U0/JCP7yA0dBFXVuD3tb4rSOr+etoK/KoOG srueg@iMac",
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJrwISQA3ZXaZaH4ThhYJxVpoinYghd/RUzpKRPRjWhU srueg@xps"
-  ]
+  type    = list(string)
+  default = []
 }
 
 variable "privnet_cidr" {
