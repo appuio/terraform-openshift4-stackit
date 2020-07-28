@@ -182,9 +182,9 @@ resource "null_resource" "api_vip_assignement" {
 
   provisioner "local-exec" {
     command = <<-EOF
-      curl -H "Authorization: Bearer $CLOUDSCALE_TOKEN" \
-        -X PATCH \
-        -F server=${cloudscale_server.lb[0].id} \
+      wget --header "Authorization: Bearer $CLOUDSCALE_TOKEN" \
+        -O - \
+        --post-data server=${cloudscale_server.lb[0].id} \
         https://api.cloudscale.ch/v1/floating-ips/${cidrhost(cloudscale_floating_ip.api_vip.network, 0)}
       EOF
   }
