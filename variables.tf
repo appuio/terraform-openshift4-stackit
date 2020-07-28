@@ -2,10 +2,6 @@ variable "cluster_id" {
   type = string
 }
 
-variable "api_eip" {
-  type = string
-}
-
 variable "ignition_bootstrap" {
   type = string
   default = ""

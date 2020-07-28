@@ -2,6 +2,10 @@ resource "random_id" "lb" {
   count       = var.lb_count
   prefix      = "lb-"
   byte_length = 1
+  keepers = {
+    api_eip        = cidrhost(cloudscale_floating_ip.api_vip.network, 0)
+    router_servers = join(",", var.router_servers)
+  }
 }
 resource "random_id" "master" {
   count       = var.master_count
@@ -60,30 +64,30 @@ resource "cloudscale_server" "lb" {
     - path: "/etc/keepalived/keepalived.conf"
       encoding: b64
       content: ${base64encode(templatefile("${path.module}/templates/keepalived.conf", {
-      "api_eip" = var.api_eip
-      "api_int" = cidrhost(var.privnet_cidr, 100)
-      "gateway" = cloudscale_subnet.privnet_subnet.gateway_address
-      "api_servers" = [
-        cidrhost(var.privnet_cidr, 10),
-        cidrhost(var.privnet_cidr, 20),
-        cidrhost(var.privnet_cidr, 21),
-        cidrhost(var.privnet_cidr, 22)
-      ]
-      "prio" = "${(var.lb_count - count.index) * 10}"
-      }))}
+  "api_eip" = random_id.lb[count.index].keepers.api_eip
+  "api_int" = cidrhost(var.privnet_cidr, 100)
+  "gateway" = cloudscale_subnet.privnet_subnet.gateway_address
+  "api_servers" = [
+    cidrhost(var.privnet_cidr, 10),
+    cidrhost(var.privnet_cidr, 20),
+    cidrhost(var.privnet_cidr, 21),
+    cidrhost(var.privnet_cidr, 22)
+  ]
+  "prio" = "${(var.lb_count - count.index) * 10}"
+  }))}
     - path: "/etc/haproxy/haproxy.cfg"
       encoding: b64
       content: ${base64encode(templatefile("${path.module}/templates/haproxy.cfg", {
-      "api_eip" = var.api_eip
-      "api_int" = cidrhost(var.privnet_cidr, 100)
-      "api_servers" = [
-        cidrhost(var.privnet_cidr, 10),
-        cidrhost(var.privnet_cidr, 20),
-        cidrhost(var.privnet_cidr, 21),
-        cidrhost(var.privnet_cidr, 22)
-      ]
-      "router_servers" = var.router_servers
-    }))}
+  "api_eip" = cidrhost(cloudscale_floating_ip.api_vip.network, 0)
+  "api_int" = cidrhost(var.privnet_cidr, 100)
+  "api_servers" = [
+    cidrhost(var.privnet_cidr, 10),
+    cidrhost(var.privnet_cidr, 20),
+    cidrhost(var.privnet_cidr, 21),
+    cidrhost(var.privnet_cidr, 22)
+  ]
+  "router_servers" = length(random_id.lb[count.index].keepers.router_servers) > 0 ? split(",", random_id.lb[count.index].keepers.router_servers) : []
+}))}
     EOF
 }
 
@@ -160,7 +164,28 @@ resource "cloudscale_server" "worker" {
 }
 
 resource "cloudscale_floating_ip" "api_vip" {
-  server      = cloudscale_server.lb[0].id
   ip_version  = 4
   reverse_ptr = "api.${var.cluster_id}.${var.base_domain}"
+
+  lifecycle {
+    ignore_changes = [
+      server
+    ]
+  }
+}
+
+resource "null_resource" "api_vip_assignement" {
+  triggers = {
+    api_eip = cloudscale_floating_ip.api_vip.network
+    server  = cloudscale_server.lb[0].id
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOF
+      curl -H "Authorization: Bearer $CLOUDSCALE_TOKEN" \
+        -X PATCH \
+        -F server=${cloudscale_server.lb[0].id} \
+        https://api.cloudscale.ch/v1/floating-ips/${cidrhost(cloudscale_floating_ip.api_vip.network, 0)}
+      EOF
+  }
 }
