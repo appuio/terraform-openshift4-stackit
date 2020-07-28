@@ -1,7 +1,6 @@
 terraform {
   required_version = ">= 0.12"
-}
-
-provider "cloudscale" {
-  version = "~> 2.2"
+  required_providers {
+    cloudscale = ">= 2.2"
+  }
 }

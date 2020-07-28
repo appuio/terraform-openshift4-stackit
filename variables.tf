@@ -8,6 +8,7 @@ variable "api_eip" {
 
 variable "ignition_bootstrap" {
   type = string
+  default = ""
 }
 
 variable "base_domain" {
@@ -31,21 +32,20 @@ variable "bootstrap_count" {
   type    = number
   default = 0
 }
+
 variable "lb_count" {
   type    = number
   default = 2
 }
+
 variable "master_count" {
   type    = number
   default = 3
 }
+
 variable "worker_count" {
   type    = number
   default = 3
-}
-
-variable "ignition_template" {
-  default = "./templates/ignition.tmpl"
 }
 
 variable "router_servers" {
