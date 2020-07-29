@@ -3,5 +3,5 @@ terraform {
 }
 
 provider "cloudscale" {
-  version = "~> 2.1"
+  version = "~> 2.2"
 }

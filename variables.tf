@@ -1,4 +1,4 @@
-variable "cluster_name" {
+variable "cluster_id" {
   type = string
 }
 
@@ -6,8 +6,16 @@ variable "api_eip" {
   type = string
 }
 
+variable "ignition_bootstrap" {
+  type = string
+}
+
 variable "base_domain" {
   default = "ocp4-poc.appuio-beta.ch"
+}
+
+variable "region" {
+  default = "rma1"
 }
 
 variable "ssh_keys" {
