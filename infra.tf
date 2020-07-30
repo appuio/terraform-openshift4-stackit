@@ -5,9 +5,9 @@ module "infra" {
   region           = var.region
   role             = "infra"
   node_count       = var.infra_count
-  node_name_suffix = "${var.cluster_id}.${var.base_domain}"
+  node_name_suffix = local.node_name_suffix
   flavor_slug      = var.infra_flavor
   subnet_uuid      = cloudscale_subnet.privnet_subnet.id
   ignition_ca      = var.ignition_ca
-  api_int          = "api-int.${var.cluster_id}.${var.base_domain}"
+  api_int          = "api-int.${local.node_name_suffix}"
 }

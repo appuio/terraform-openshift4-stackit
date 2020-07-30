@@ -3,25 +3,16 @@ output "infra_servers" {
 }
 
 output "dns_entries" {
-  value = <<-EOF
-    api.${var.cluster_id}.${var.base_domain} IN A ${split("/", cloudscale_floating_ip.api_vip.network)[0]}
-
-    *.apps.${var.cluster_id}.${var.base_domain} IN CNAME api.${var.cluster_id}.${var.base_domain}.
-
-    api-int.${var.cluster_id}.${var.base_domain} IN A ${cidrhost(var.privnet_cidr, 100)}
-
-    etcd-0.${var.cluster_id}.${var.base_domain} IN A ${cidrhost(var.privnet_cidr, 20)}
-    etcd-1.${var.cluster_id}.${var.base_domain} IN A ${cidrhost(var.privnet_cidr, 21)}
-    etcd-2.${var.cluster_id}.${var.base_domain} IN A ${cidrhost(var.privnet_cidr, 22)}
-
-    _etcd-server-ssl._tcp.${var.cluster_id}.${var.base_domain} IN SRV 0 10 2380 etcd-0.${var.cluster_id}.${var.base_domain}
-    _etcd-server-ssl._tcp.${var.cluster_id}.${var.base_domain} IN SRV 0 10 2380 etcd-1.${var.cluster_id}.${var.base_domain}
-    _etcd-server-ssl._tcp.${var.cluster_id}.${var.base_domain} IN SRV 0 10 2380 etcd-2.${var.cluster_id}.${var.base_domain}
-    EOF
+  value = templatefile("${path.module}/templates/dns.zone", {
+    "node_name_suffix" = local.node_name_suffix,
+    "eip_api"          = split("/", cloudscale_floating_ip.api_vip.network)[0],
+    "api_int"          = cidrhost(var.privnet_cidr, 100),
+    "masters"          = module.master.ip_addresses,
+  })
 }
 
 output "node_name_suffix" {
-  value = "${var.cluster_id}.${var.base_domain}"
+  value = "${local.node_name_suffix}"
 }
 
 output "subnet_uuid" {
@@ -41,5 +32,5 @@ output "ignition_ca" {
 }
 
 output "api_int" {
-  value = "api-int.${var.cluster_id}.${var.base_domain}"
+  value = "api-int.${local.node_name_suffix}"
 }

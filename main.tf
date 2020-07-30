@@ -1,3 +1,7 @@
+locals {
+  node_name_suffix = "${var.cluster_id}.${var.base_domain}"
+}
+
 resource "cloudscale_network" "privnet" {
   name                    = "privnet-${var.cluster_id}"
   zone_slug               = var.region

@@ -10,7 +10,7 @@ resource "random_id" "lb" {
 
 resource "cloudscale_server" "lb" {
   count          = var.lb_count
-  name           = "${random_id.lb[count.index].hex}.${var.cluster_id}.${var.base_domain}"
+  name           = "${random_id.lb[count.index].hex}.${local.node_name_suffix}"
   zone_slug      = var.region
   flavor_slug    = "flex-4"
   image_slug     = "ubuntu-20.04"
@@ -46,12 +46,6 @@ resource "cloudscale_server" "lb" {
   "api_eip" = random_id.lb[count.index].keepers.api_eip
   "api_int" = cidrhost(var.privnet_cidr, 100)
   "gateway" = cloudscale_subnet.privnet_subnet.gateway_address
-  "api_servers" = [
-    cidrhost(var.privnet_cidr, 10),
-    cidrhost(var.privnet_cidr, 20),
-    cidrhost(var.privnet_cidr, 21),
-    cidrhost(var.privnet_cidr, 22)
-  ]
   "prio" = "${(var.lb_count - count.index) * 10}"
   }))}
     - path: "/etc/haproxy/haproxy.cfg"
@@ -61,9 +55,9 @@ resource "cloudscale_server" "lb" {
   "api_int" = cidrhost(var.privnet_cidr, 100)
   "api_servers" = [
     cidrhost(var.privnet_cidr, 10),
-    cidrhost(var.privnet_cidr, 20),
-    cidrhost(var.privnet_cidr, 21),
-    cidrhost(var.privnet_cidr, 22)
+    "etcd-0.${local.node_name_suffix}",
+    "etcd-1.${local.node_name_suffix}",
+    "etcd-2.${local.node_name_suffix}",
   ]
   "infra_servers" = length(random_id.lb[count.index].keepers.infra_servers) > 0 ? split(",", random_id.lb[count.index].keepers.infra_servers) : []
 }))}

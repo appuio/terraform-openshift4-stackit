@@ -1,0 +1,13 @@
+api.${node_name_suffix} IN A ${eip_api}
+
+*.apps.${node_name_suffix} IN CNAME api.${node_name_suffix}.
+
+api-int.${node_name_suffix} IN A ${api_int}
+
+%{ for i, addr in masters ~}
+etcd-${i}.${node_name_suffix} IN A ${addr}
+%{ endfor ~}
+
+%{ for i, addr in masters ~}
+_etcd-server-ssl._tcp.${node_name_suffix} IN SRV 0 10 2380 etcd-${i}.${node_name_suffix}
+%{ endfor ~}
