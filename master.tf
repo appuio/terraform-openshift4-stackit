@@ -23,21 +23,27 @@ resource "cloudscale_server" "master" {
       "ignition": {
         "version": "2.2.0",
         "config": {
-          "append": [
-            {
-              "source": "https://api-int.${var.cluster_id}.${var.base_domain}:22623/config/master"
-            }
-          ]
+          "append": [{
+            "source": "https://api-int.${var.cluster_id}.${var.base_domain}:22623/config/master"
+          }]
         },
         "security": {
           "tls": {
-            "certificateAuthorities": [
-              {
-                "source": "data:text/plain;charset=utf-8;base64,${base64encode(var.ignition_ca)}"
-              }
-            ]
+            "certificateAuthorities": [{
+              "source": "data:text/plain;charset=utf-8;base64,${base64encode(var.ignition_ca)}"
+            }]
           }
         }
+      },
+      "storage": {
+        "files": [{
+          "filesystem": "root",
+          "path": "/etc/hostname",
+          "mode": 420,
+          "contents": {
+              "source": "data:,${random_id.master[count.index].hex}"
+          }
+        }]
       }
     }
     EOF

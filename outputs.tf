@@ -1,5 +1,5 @@
-output "router_servers" {
-  value = module.worker.ip_addresses
+output "infra_servers" {
+  value = module.infra.ip_addresses
 }
 
 output "dns_entries" {
@@ -18,4 +18,28 @@ output "dns_entries" {
     _etcd-server-ssl._tcp.${var.cluster_id}.${var.base_domain} IN SRV 0 10 2380 etcd-1.${var.cluster_id}.${var.base_domain}
     _etcd-server-ssl._tcp.${var.cluster_id}.${var.base_domain} IN SRV 0 10 2380 etcd-2.${var.cluster_id}.${var.base_domain}
     EOF
+}
+
+output "node_name_suffix" {
+  value = "${var.cluster_id}.${var.base_domain}"
+}
+
+output "subnet_uuid" {
+  value = cloudscale_subnet.privnet_subnet.id
+}
+
+output "region" {
+  value = var.region
+}
+
+output "cluster_id" {
+  value = var.cluster_id
+}
+
+output "ignition_ca" {
+  value = var.ignition_ca
+}
+
+output "api_int" {
+  value = "api-int.${var.cluster_id}.${var.base_domain}"
 }

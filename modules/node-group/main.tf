@@ -22,28 +22,28 @@ resource "cloudscale_server" "node" {
       "ignition": {
         "version": "2.2.0",
         "config": {
-          "append": [
-            {
-              "source": "https://${var.api_int}:22623/config/${var.ignition_config}"
-            }
-          ]
+          "append": [{
+            "source": "https://${var.api_int}:22623/config/${var.ignition_config}"
+          }]
         },
         "security": {
           "tls": {
-            "certificateAuthorities": [
-              {
-                "source": "data:text/plain;charset=utf-8;base64,${base64encode(var.ignition_ca)}"
-              }
-            ]
+            "certificateAuthorities": [{
+              "source": "data:text/plain;charset=utf-8;base64,${base64encode(var.ignition_ca)}"
+            }]
           }
         }
+      },
+      "storage": {
+        "files": [{
+          "filesystem": "root",
+          "path": "/etc/hostname",
+          "mode": 420,
+          "contents": {
+              "source": "data:,${random_id.node[count.index].hex}"
+          }
+        }]
       }
     }
     EOF
-
-  lifecycle {
-    ignore_changes = [
-      user_data
-    ]
-  }
 }

@@ -50,14 +50,20 @@ variable "master_count" {
   default = 3
 }
 
-variable "worker_count" {
+variable "infra_count" {
   type        = number
   default     = 3
-  description = "Number of worker nodes"
+  description = "Number of infra nodes"
 }
 
-variable "router_servers" {
+variable "infra_flavor" {
+  type        = string
+  default     = "flex-8"
+  description = "Flavor to use for infra nodes"
+}
+
+variable "infra_servers" {
   type        = list(string)
   default     = []
-  description = "IP addresses of the router nodes"
+  description = "IP addresses of the infra nodes"
 }

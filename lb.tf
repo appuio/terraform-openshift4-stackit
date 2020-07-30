@@ -4,7 +4,7 @@ resource "random_id" "lb" {
   byte_length = 1
   keepers = {
     api_eip        = cidrhost(cloudscale_floating_ip.api_vip.network, 0)
-    router_servers = join(",", var.router_servers)
+    infra_servers = join(",", var.infra_servers)
   }
 }
 
@@ -65,7 +65,7 @@ resource "cloudscale_server" "lb" {
     cidrhost(var.privnet_cidr, 21),
     cidrhost(var.privnet_cidr, 22)
   ]
-  "router_servers" = length(random_id.lb[count.index].keepers.router_servers) > 0 ? split(",", random_id.lb[count.index].keepers.router_servers) : []
+  "infra_servers" = length(random_id.lb[count.index].keepers.infra_servers) > 0 ? split(",", random_id.lb[count.index].keepers.infra_servers) : []
 }))}
     EOF
 }
