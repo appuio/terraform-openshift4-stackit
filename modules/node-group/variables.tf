@@ -37,7 +37,7 @@ variable "flavor_slug" {
 variable "image_slug" {
   type        = string
   description = "Image to use for nodes"
-  default     = "rhcos-4.4"
+  default     = "rhcos-4.5"
 }
 
 variable "volume_size_gb" {
