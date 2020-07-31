@@ -67,3 +67,21 @@ variable "infra_servers" {
   default     = []
   description = "IP addresses of the infra nodes"
 }
+
+variable "worker_count" {
+  type        = number
+  default     = 3
+  description = "Number of worker nodes"
+}
+
+variable "worker_flavor" {
+  type        = string
+  default     = "flex-16"
+  description = "Flavor to use for worker nodes"
+}
+
+variable "worker_volume_size_gb" {
+  type        = number
+  description = "Worker boot volume size in GBs"
+  default     = 128
+}
