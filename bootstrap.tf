@@ -3,7 +3,7 @@ resource "cloudscale_server" "bootstrap" {
   name           = "bootstrap.${local.node_name_suffix}"
   zone_slug      = var.region
   flavor_slug    = "flex-16"
-  image_slug     = "rhcos-4.4"
+  image_slug     = var.image_slug
   volume_size_gb = 128
   interfaces {
     type = "private"

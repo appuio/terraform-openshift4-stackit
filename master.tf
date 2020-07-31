@@ -7,6 +7,7 @@ module "master" {
   ignition_config  = "master"
   node_count       = var.master_count
   node_name_suffix = local.node_name_suffix
+  image_slug       = var.image_slug
   flavor_slug      = "flex-16"
   subnet_uuid      = cloudscale_subnet.privnet_subnet.id
   ignition_ca      = var.ignition_ca

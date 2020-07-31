@@ -85,3 +85,9 @@ variable "worker_volume_size_gb" {
   description = "Worker boot volume size in GBs"
   default     = 128
 }
+
+variable "image_slug" {
+  type        = string
+  description = "Image to use for nodes"
+  default     = "rhcos-4.5"
+}
