@@ -3,7 +3,7 @@ resource "random_id" "lb" {
   prefix      = "lb-"
   byte_length = 1
   keepers = {
-    api_eip        = cidrhost(cloudscale_floating_ip.api_vip.network, 0)
+    api_eip       = cidrhost(cloudscale_floating_ip.api_vip.network, 0)
     infra_servers = join(",", var.infra_servers)
   }
 }
@@ -46,7 +46,7 @@ resource "cloudscale_server" "lb" {
   "api_eip" = random_id.lb[count.index].keepers.api_eip
   "api_int" = cidrhost(var.privnet_cidr, 100)
   "gateway" = cloudscale_subnet.privnet_subnet.gateway_address
-  "prio" = "${(var.lb_count - count.index) * 10}"
+  "prio"    = "${(var.lb_count - count.index) * 10}"
   }))}
     - path: "/etc/haproxy/haproxy.cfg"
       encoding: b64
