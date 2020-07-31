@@ -20,7 +20,7 @@ variable "base_domain" {
 }
 
 variable "region" {
-  default     = "rma1"
+  type        = string
   description = "Region where to deploy nodes"
 }
 
@@ -58,7 +58,7 @@ variable "infra_count" {
 
 variable "infra_flavor" {
   type        = string
-  default     = "flex-8"
+  default     = "flex-16"
   description = "Flavor to use for infra nodes"
 }
 
