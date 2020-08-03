@@ -4,7 +4,7 @@ resource "random_id" "lb" {
   byte_length = 1
   keepers = {
     api_eip       = cidrhost(cloudscale_floating_ip.api_vip.network, 0)
-    infra_servers = join(",", var.infra_servers)
+    infra_servers = join(",", module.infra.ip_addresses)
   }
 }
 

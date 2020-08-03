@@ -1,7 +1,3 @@
-output "infra_servers" {
-  value = module.infra.ip_addresses
-}
-
 output "dns_entries" {
   value = templatefile("${path.module}/templates/dns.zone", {
     "node_name_suffix" = local.node_name_suffix,
