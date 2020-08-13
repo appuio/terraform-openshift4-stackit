@@ -8,14 +8,21 @@ resource "random_id" "lb" {
   }
 }
 
+resource "cloudscale_server_group" "lb" {
+  name      = "lb-group"
+  type      = "anti-affinity"
+  zone_slug = var.region
+}
+
 resource "cloudscale_server" "lb" {
-  count          = var.lb_count
-  name           = "${random_id.lb[count.index].hex}.${local.node_name_suffix}"
-  zone_slug      = var.region
-  flavor_slug    = "plus-8"
-  image_slug     = "ubuntu-20.04"
-  volume_size_gb = 50
-  ssh_keys       = var.ssh_keys
+  count            = var.lb_count
+  name             = "${random_id.lb[count.index].hex}.${local.node_name_suffix}"
+  zone_slug        = var.region
+  flavor_slug      = "plus-8"
+  image_slug       = "ubuntu-20.04"
+  server_group_ids = [cloudscale_server_group.lb.id]
+  volume_size_gb   = 50
+  ssh_keys         = var.ssh_keys
   interfaces {
     type = "public"
   }
