@@ -37,8 +37,8 @@ resource "cloudscale_server" "lb" {
     - "iptables -t nat -A POSTROUTING -o ens3 -j MASQUERADE"
     - "sysctl -w net.ipv4.ip_forward=1"
     - "sysctl -w net.ipv4.ip_nonlocal_bind=1"
-    - "ip link set ens7 up"
-    - "ip address add ${cidrhost(var.privnet_cidr, 2 + count.index)}/24 dev ens7"
+    - "ip link set ens4 up"
+    - "ip address add ${cidrhost(var.privnet_cidr, 2 + count.index)}/24 dev ens4"
     write_files:
     - path: "/etc/keepalived/keepalived.conf"
       encoding: b64
