@@ -31,7 +31,7 @@ variable "cluster_id" {
 variable "flavor_slug" {
   type        = string
   description = "Flavor to use for nodes"
-  default     = "flex-8"
+  default     = "plus-16"
 }
 
 variable "image_slug" {
