@@ -4,7 +4,7 @@ locals {
 
 resource "cloudscale_network" "privnet" {
   name                    = "privnet-${var.cluster_id}"
-  zone_slug               = var.region
+  zone_slug               = "${var.region}1"
   auto_create_ipv4_subnet = false
 }
 
@@ -15,7 +15,8 @@ resource "cloudscale_subnet" "privnet_subnet" {
 }
 
 resource "cloudscale_floating_ip" "api_vip" {
-  ip_version = 4
+  ip_version  = 4
+  region_slug = var.region
 
   lifecycle {
     ignore_changes = [

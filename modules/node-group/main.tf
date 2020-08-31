@@ -7,13 +7,13 @@ resource "random_id" "node" {
 resource "cloudscale_server_group" "nodes" {
   name      = "${var.role}-group"
   type      = "anti-affinity"
-  zone_slug = var.region
+  zone_slug = "${var.region}1"
 }
 
 resource "cloudscale_server" "node" {
   count            = var.node_count
   name             = "${random_id.node[count.index].hex}.${var.node_name_suffix}"
-  zone_slug        = var.region
+  zone_slug        = "${var.region}1"
   flavor_slug      = var.flavor_slug
   image_slug       = var.image_slug
   server_group_ids = [cloudscale_server_group.nodes.id]
