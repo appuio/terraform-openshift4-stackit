@@ -11,13 +11,13 @@ resource "random_id" "lb" {
 resource "cloudscale_server_group" "lb" {
   name      = "lb-group"
   type      = "anti-affinity"
-  zone_slug = var.region
+  zone_slug = "${var.region}1"
 }
 
 resource "cloudscale_server" "lb" {
   count            = var.lb_count
   name             = "${random_id.lb[count.index].hex}.${local.node_name_suffix}"
-  zone_slug        = var.region
+  zone_slug        = "${var.region}1"
   flavor_slug      = "plus-8"
   image_slug       = "ubuntu-20.04"
   server_group_ids = [cloudscale_server_group.lb.id]

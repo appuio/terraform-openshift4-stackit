@@ -1,7 +1,7 @@
 resource "cloudscale_server" "bootstrap" {
   count          = var.bootstrap_count
   name           = "bootstrap.${local.node_name_suffix}"
-  zone_slug      = var.region
+  zone_slug      = "${var.region}1"
   flavor_slug    = "flex-16"
   image_slug     = var.image_slug
   volume_size_gb = 128
