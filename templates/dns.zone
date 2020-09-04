@@ -1,13 +1,14 @@
-api.${node_name_suffix} IN A ${eip_api}
+; Cluster ${cluster_id}
+$ORIGIN ${node_name_suffix}.
 
-*.apps.${node_name_suffix} IN CNAME api.${node_name_suffix}.
-
-api-int.${node_name_suffix} IN A ${api_int}
+api       IN A     ${eip_api}
+api-int   IN A     ${api_int}
+*.apps    IN CNAME api
 
 %{ for i, addr in masters ~}
-etcd-${i}.${node_name_suffix} IN A ${addr}
+etcd-${i} IN A     ${addr}
 %{ endfor ~}
 
 %{ for i, addr in masters ~}
-_etcd-server-ssl._tcp.${node_name_suffix} IN SRV 0 10 2380 etcd-${i}.${node_name_suffix}
+_etcd-server-ssl._tcp IN SRV 0 10 2380 etcd-${i}
 %{ endfor ~}
