@@ -3,12 +3,13 @@ resource "random_id" "lb" {
   prefix      = "lb-"
   byte_length = 1
   keepers = {
-    api_eip       = cidrhost(cloudscale_floating_ip.api_vip.network, 0)
+    api_eip       = cidrhost(cloudscale_floating_ip.api_vip[0].network, 0)
     infra_servers = join(",", module.infra.ip_addresses)
   }
 }
 
 resource "cloudscale_server_group" "lb" {
+  count = var.lb_count != 0 ? 1 : 0
   name      = "lb-group"
   type      = "anti-affinity"
   zone_slug = "${var.region}1"
@@ -20,7 +21,7 @@ resource "cloudscale_server" "lb" {
   zone_slug        = "${var.region}1"
   flavor_slug      = "plus-8"
   image_slug       = "ubuntu-20.04"
-  server_group_ids = [cloudscale_server_group.lb.id]
+  server_group_ids = var.lb_count != 0 ? [cloudscale_server_group.lb[0].id] : []
   volume_size_gb   = 50
   ssh_keys         = var.ssh_keys
   interfaces {
@@ -58,7 +59,7 @@ resource "cloudscale_server" "lb" {
     - path: "/etc/haproxy/haproxy.cfg"
       encoding: b64
       content: ${base64encode(templatefile("${path.module}/templates/haproxy.cfg", {
-  "api_eip" = cidrhost(cloudscale_floating_ip.api_vip.network, 0)
+  "api_eip" = cidrhost(cloudscale_floating_ip.api_vip[0].network, 0)
   "api_int" = cidrhost(var.privnet_cidr, 100)
   "api_servers" = [
     cidrhost(var.privnet_cidr, 10),
@@ -72,8 +73,9 @@ resource "cloudscale_server" "lb" {
 }
 
 resource "null_resource" "api_vip_assignement" {
+  count = var.lb_count != 0 ? 1 : 0
   triggers = {
-    api_eip = cloudscale_floating_ip.api_vip.network
+    api_eip = cloudscale_floating_ip.api_vip[0].network
     server  = cloudscale_server.lb[0].id
   }
 
@@ -82,7 +84,7 @@ resource "null_resource" "api_vip_assignement" {
       wget --header "Authorization: Bearer $CLOUDSCALE_TOKEN" \
         -O - \
         --post-data server=${cloudscale_server.lb[0].id} \
-        https://api.cloudscale.ch/v1/floating-ips/${cidrhost(cloudscale_floating_ip.api_vip.network, 0)}
+        https://api.cloudscale.ch/v1/floating-ips/${cidrhost(cloudscale_floating_ip.api_vip[0].network, 0)}
       EOF
   }
 }
