@@ -9,7 +9,7 @@ resource "random_id" "lb" {
 }
 
 resource "cloudscale_server_group" "lb" {
-  count = var.lb_count != 0 ? 1 : 0
+  count     = var.lb_count != 0 ? 1 : 0
   name      = "lb-group"
   type      = "anti-affinity"
   zone_slug = "${var.region}1"
