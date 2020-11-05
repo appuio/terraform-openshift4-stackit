@@ -1,7 +1,7 @@
 output "dns_entries" {
   value = templatefile("${path.module}/templates/dns.zone", {
     "node_name_suffix" = local.node_name_suffix,
-    "eip_api"          = split("/", cloudscale_floating_ip.api_vip.network)[0],
+    "eip_api"          = var.lb_count != 0 ? split("/", cloudscale_floating_ip.api_vip[0].network)[0] : ""
     "api_int"          = cidrhost(var.privnet_cidr, 100),
     "masters"          = module.master.ip_addresses,
     "cluster_id"       = var.cluster_id,

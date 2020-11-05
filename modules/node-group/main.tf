@@ -5,6 +5,7 @@ resource "random_id" "node" {
 }
 
 resource "cloudscale_server_group" "nodes" {
+  count = var.node_count != 0 ? 1 : 0
   name      = "${var.role}-group"
   type      = "anti-affinity"
   zone_slug = "${var.region}1"
@@ -16,7 +17,7 @@ resource "cloudscale_server" "node" {
   zone_slug        = "${var.region}1"
   flavor_slug      = var.flavor_slug
   image_slug       = var.image_slug
-  server_group_ids = [cloudscale_server_group.nodes.id]
+  server_group_ids = var.node_count != 0 ? [cloudscale_server_group.nodes[0].id] : []
   volume_size_gb   = var.volume_size_gb
   interfaces {
     type = "private"

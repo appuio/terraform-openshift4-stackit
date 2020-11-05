@@ -15,6 +15,7 @@ resource "cloudscale_subnet" "privnet_subnet" {
 }
 
 resource "cloudscale_floating_ip" "api_vip" {
+  count       = var.lb_count != 0 ? 1 : 0
   ip_version  = 4
   region_slug = var.region
 
