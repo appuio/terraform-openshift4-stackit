@@ -1,3 +1,8 @@
+locals {
+  anti_affinity_capacity = 4
+  anti_affinity_group_count = ceil(var.node_count / local.anti_affinity_capacity)
+}
+
 resource "random_id" "node" {
   count       = var.node_count
   prefix      = "${var.role}-"
@@ -5,7 +10,7 @@ resource "random_id" "node" {
 }
 
 resource "cloudscale_server_group" "nodes" {
-  count = var.node_count != 0 ? 1 : 0
+  count = var.node_count != 0 ? local.anti_affinity_group_count : 0
   name      = "${var.role}-group"
   type      = "anti-affinity"
   zone_slug = "${var.region}1"
@@ -17,7 +22,7 @@ resource "cloudscale_server" "node" {
   zone_slug        = "${var.region}1"
   flavor_slug      = var.flavor_slug
   image_slug       = var.image_slug
-  server_group_ids = var.node_count != 0 ? [cloudscale_server_group.nodes[0].id] : []
+  server_group_ids = var.node_count != 0 ? [cloudscale_server_group.nodes[floor(count.index / local.anti_affinity_capacity)].id] : []
   volume_size_gb   = var.volume_size_gb
   interfaces {
     type = "private"
