@@ -15,9 +15,9 @@ resource "cloudscale_server" "bootstrap" {
   user_data = <<-EOF
     {
         "ignition": {
-            "version": "2.2.0",
+            "version": "3.1.0",
             "config": {
-                "append": [
+                "merge": [
                     {
                         "source": "${var.ignition_bootstrap}"
                     }
