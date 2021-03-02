@@ -23,6 +23,13 @@ resource "cloudscale_server" "bootstrap" {
                     }
                 ]
             }
+        },
+        "systemd": {
+            "units": [{
+                "name": "cloudscale-hostkeys.service",
+                "enabled": true,
+                "contents": "[Unit]\nDescription=Print SSH Public Keys to tty\nAfter=sshd-keygen.target\n\n[Install]\nWantedBy=multi-user.target\n\n[Service]\nType=oneshot\nStandardOutput=tty\nTTYPath=/dev/ttyS0\nExecStart=/bin/sh -c \"echo '-----BEGIN SSH HOST KEY KEYS-----'; cat /etc/ssh/ssh_host_*key.pub; echo '-----END SSH HOST KEY KEYS-----'\""
+            }]
         }
     }
     EOF
