@@ -1,5 +1,5 @@
 locals {
-  anti_affinity_capacity = 4
+  anti_affinity_capacity    = 4
   anti_affinity_group_count = ceil(var.node_count / local.anti_affinity_capacity)
 }
 
@@ -10,7 +10,7 @@ resource "random_id" "node" {
 }
 
 resource "cloudscale_server_group" "nodes" {
-  count = var.node_count != 0 ? local.anti_affinity_group_count : 0
+  count     = var.node_count != 0 ? local.anti_affinity_group_count : 0
   name      = "${var.role}-group"
   type      = "anti-affinity"
   zone_slug = "${var.region}1"

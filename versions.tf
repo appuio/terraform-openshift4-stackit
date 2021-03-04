@@ -1,7 +1,7 @@
 terraform {
   required_providers {
-     cloudscale = {
-      source = "cloudscale-ch/cloudscale"
+    cloudscale = {
+      source  = "cloudscale-ch/cloudscale"
       version = ">= 2.3"
     }
     null = {
