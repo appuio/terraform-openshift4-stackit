@@ -9,7 +9,7 @@ output "dns_entries" {
 }
 
 output "node_name_suffix" {
-  value = "${local.node_name_suffix}"
+  value = local.node_name_suffix
 }
 
 output "subnet_uuid" {

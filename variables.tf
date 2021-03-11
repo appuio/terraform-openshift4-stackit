@@ -89,5 +89,5 @@ variable "worker_volume_size_gb" {
 variable "image_slug" {
   type        = string
   description = "Image to use for nodes"
-  default     = "rhcos-4.5"
+  default     = "custom:rhcos-4.7"
 }

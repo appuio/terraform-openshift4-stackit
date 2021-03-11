@@ -1,5 +1,5 @@
 locals {
-  anti_affinity_capacity = 4
+  anti_affinity_capacity    = 4
   anti_affinity_group_count = ceil(var.node_count / local.anti_affinity_capacity)
 }
 
@@ -10,7 +10,7 @@ resource "random_id" "node" {
 }
 
 resource "cloudscale_server_group" "nodes" {
-  count = var.node_count != 0 ? local.anti_affinity_group_count : 0
+  count     = var.node_count != 0 ? local.anti_affinity_group_count : 0
   name      = "${var.role}-group"
   type      = "anti-affinity"
   zone_slug = "${var.region}1"
@@ -33,9 +33,9 @@ resource "cloudscale_server" "node" {
   user_data = <<-EOF
     {
       "ignition": {
-        "version": "2.2.0",
+        "version": "3.1.0",
         "config": {
-          "append": [{
+          "merge": [{
             "source": "https://${var.api_int}:22623/config/${var.ignition_config}"
           }]
         },
@@ -46,6 +46,13 @@ resource "cloudscale_server" "node" {
             }]
           }
         }
+      },
+      "systemd": {
+        "units": [{
+          "name": "cloudscale-hostkeys.service",
+          "enabled": true,
+          "contents": "[Unit]\nDescription=Print SSH Public Keys to tty\nAfter=sshd-keygen.target\n\n[Install]\nWantedBy=multi-user.target\n\n[Service]\nType=oneshot\nStandardOutput=tty\nTTYPath=/dev/ttyS0\nExecStart=/bin/sh -c \"echo '-----BEGIN SSH HOST KEY KEYS-----'; cat /etc/ssh/ssh_host_*key.pub; echo '-----END SSH HOST KEY KEYS-----'\""
+          }]
       },
       "storage": {
         "files": [{
