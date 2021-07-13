@@ -1,4 +1,5 @@
 terraform {
+  required_version = ">= 0.14"
   required_providers {
     cloudscale = {
       source  = "cloudscale-ch/cloudscale"
@@ -13,5 +14,4 @@ terraform {
       version = ">= 2.3"
     }
   }
-  required_version = ">= 0.13"
 }

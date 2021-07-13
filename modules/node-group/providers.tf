@@ -1,4 +1,5 @@
 terraform {
+  required_version = ">= 0.14"
   required_providers {
     cloudscale = {
       source = "terraform-providers/cloudscale"
@@ -7,5 +8,4 @@ terraform {
       source = "hashicorp/random"
     }
   }
-  required_version = ">= 0.13"
 }
