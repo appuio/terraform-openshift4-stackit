@@ -70,7 +70,7 @@ resource "null_resource" "register_lb" {
     environment = {
       CONTROL_VSHN_NET_TOKEN = var.control_vshn_net_token
       SERVER_FQDN            = local.instance_fqdns[count.index]
-      SERVER_REGION = "${var.region}.ch"
+      SERVER_REGION          = "${var.region}.ch"
       # Cluster id is used as encdata stage
       CLUSTER_ID = var.cluster_id
     }
@@ -96,13 +96,13 @@ resource "local_file" "lb_hieradata" {
   content = templatefile(
     "${path.module}/templates/hieradata.yaml.tmpl",
     {
-      "cluster_id" = var.cluster_id
-      "api_vip"     = cidrhost(cloudscale_floating_ip.api_vip[0].network, 0)
-      "router_vip"  = cidrhost(cloudscale_floating_ip.router_vip[0].network, 0)
-      "api_secret" = var.lb_cloudscale_api_secret
-      "internal_vip" =  cidrhost(var.privnet_cidr, 100)
-      "nat_vip"       = cidrhost(cloudscale_floating_ip.nat_vip[0].network, 0)
-      "nodes"      = local.instance_fqdns
+      "cluster_id"   = var.cluster_id
+      "api_vip"      = cidrhost(cloudscale_floating_ip.api_vip[0].network, 0)
+      "router_vip"   = cidrhost(cloudscale_floating_ip.router_vip[0].network, 0)
+      "api_secret"   = var.lb_cloudscale_api_secret
+      "internal_vip" = cidrhost(var.privnet_cidr, 100)
+      "nat_vip"      = cidrhost(cloudscale_floating_ip.nat_vip[0].network, 0)
+      "nodes"        = local.instance_fqdns
       "backends" = {
         "api"    = formatlist("etcd-%d.${local.node_name_suffix}", range(3))
         "router" = module.infra.ip_addresses[*],
@@ -132,14 +132,15 @@ data "local_file" "hieradata_mr_url" {
 }
 
 resource "cloudscale_server" "lb" {
-  count            = var.lb_count
-  name             = local.instance_fqdns[count.index]
-  zone_slug        = "${var.region}1"
-  flavor_slug      = "plus-8"
-  image_slug       = "ubuntu-20.04"
-  server_group_ids = var.lb_count != 0 ? [cloudscale_server_group.lb[0].id] : []
-  volume_size_gb   = 50
-  ssh_keys         = var.ssh_keys
+  count                          = var.lb_count
+  name                           = local.instance_fqdns[count.index]
+  zone_slug                      = "${var.region}1"
+  flavor_slug                    = "plus-8"
+  image_slug                     = "ubuntu-20.04"
+  server_group_ids               = var.lb_count != 0 ? [cloudscale_server_group.lb[0].id] : []
+  volume_size_gb                 = 50
+  ssh_keys                       = var.ssh_keys
+  skip_waiting_for_ssh_host_keys = true
   interfaces {
     type = "public"
   }
