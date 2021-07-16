@@ -5,7 +5,7 @@ profile_openshift4_gateway::nodes:
 %{ endfor ~}
 profile_openshift4_gateway::public_interface: ens3
 profile_openshift4_gateway::private_interfaces:
-  - ens7
+  - ens4
 profile_openshift4_gateway::floating_addresses:
   api: ${api_vip}
   nat: ${nat_vip}

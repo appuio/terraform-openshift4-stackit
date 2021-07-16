@@ -39,12 +39,12 @@ locals {
   }
   common_write_files = [
     {
-      path       = "/etc/netplan/60-ens7.yaml"
+      path       = "/etc/netplan/60-ens4.yaml"
       "encoding" = "b64"
       "content" = base64encode(yamlencode({
         "network" = {
           "ethernets" = {
-            "ens7" = {
+            "ens4" = {
               "dhcp4" = true,
             },
           },
