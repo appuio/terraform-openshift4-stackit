@@ -13,5 +13,9 @@ terraform {
       source  = "hashicorp/random"
       version = ">= 2.3"
     }
+    gitfile = {
+      source  = "igal-s/gitfile"
+      version = "1.0.0"
+    }
   }
 }

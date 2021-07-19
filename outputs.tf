@@ -1,10 +1,13 @@
 output "dns_entries" {
   value = templatefile("${path.module}/templates/dns.zone", {
     "node_name_suffix" = local.node_name_suffix,
-    "eip_api"          = var.lb_count != 0 ? split("/", cloudscale_floating_ip.api_vip[0].network)[0] : ""
-    "api_int"          = cidrhost(var.privnet_cidr, 100),
+    "api_vip"          = var.lb_count != 0 ? split("/", cloudscale_floating_ip.api_vip[0].network)[0] : ""
+    "router_vip"       = var.lb_count != 0 ? split("/", cloudscale_floating_ip.router_vip[0].network)[0] : ""
+    "internal_vip"     = cidrhost(var.privnet_cidr, 100),
     "masters"          = module.master.ip_addresses,
     "cluster_id"       = var.cluster_id,
+    "lbs"              = cloudscale_server.lb[*].public_ipv4_address,
+    "lb_hostnames"     = random_id.lb[*].hex
   })
 }
 
@@ -30,4 +33,8 @@ output "ignition_ca" {
 
 output "api_int" {
   value = "api-int.${local.node_name_suffix}"
+}
+
+output "hieradata_mr" {
+  value = data.local_file.hieradata_mr_url.content
 }
