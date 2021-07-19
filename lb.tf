@@ -36,23 +36,24 @@ locals {
       "sleep 5",
       "shutdown --reboot +1 'Reboot for system setup'",
     ],
-  }
-  common_write_files = [
-    {
-      path       = "/etc/netplan/60-ens4.yaml"
-      "encoding" = "b64"
-      "content" = base64encode(yamlencode({
-        "network" = {
-          "ethernets" = {
-            "ens4" = {
-              "dhcp4" = true,
+    "manage_etc_hosts" = true,
+    "write_files" = [
+      {
+        path       = "/etc/netplan/60-ens4.yaml"
+        "encoding" = "b64"
+        "content" = base64encode(yamlencode({
+          "network" = {
+            "ethernets" = {
+              "ens4" = {
+                "dhcp4" = true,
+              },
             },
-          },
-          "version" = 2,
-        }
-      }))
-    }
-  ]
+            "version" = 2,
+          }
+        }))
+      }
+    ]
+  }
 }
 
 resource "null_resource" "register_lb" {
@@ -155,12 +156,8 @@ resource "cloudscale_server" "lb" {
   user_data = format("#cloud-config\n%s", yamlencode(merge(
     local.common_user_data,
     {
-      "fqdn"             = local.instance_fqdns[count.index],
-      "hostname"         = random_id.lb[count.index].hex,
-      "manage_etc_hosts" = true,
-    },
-    {
-      "write_files" = local.common_write_files,
+      "fqdn"     = local.instance_fqdns[count.index],
+      "hostname" = random_id.lb[count.index].hex,
     }
   )))
 
