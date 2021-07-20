@@ -91,3 +91,15 @@ variable "image_slug" {
   description = "Image to use for nodes"
   default     = "custom:rhcos-4.7"
 }
+
+variable "lb_cloudscale_api_secret" {
+  type = string
+}
+
+variable "hieradata_repo_user" {
+  type = string
+}
+
+variable "control_vshn_net_token" {
+  type = string
+}
