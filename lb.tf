@@ -150,6 +150,11 @@ resource "cloudscale_server" "lb" {
     network_uuid = cloudscale_network.privnet.id
   }
   lifecycle {
+    ignore_changes = [
+      skip_waiting_for_ssh_host_keys,
+      image_slug,
+      user_data,
+    ]
     create_before_destroy = true
   }
 
