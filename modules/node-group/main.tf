@@ -66,4 +66,12 @@ resource "cloudscale_server" "node" {
       }
     }
     EOF
+
+  lifecycle {
+    ignore_changes = [
+      skip_waiting_for_ssh_host_keys,
+      image_slug,
+      user_data,
+    ]
+  }
 }
