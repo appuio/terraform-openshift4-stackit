@@ -86,6 +86,24 @@ variable "worker_volume_size_gb" {
   default     = 128
 }
 
+variable "additional_worker_groups" {
+  type    = map(object({ flavor = string, count = number, volume_size_gb = optional(number) }))
+  default = {}
+
+  validation {
+    condition = alltrue([
+      for k, v in var.additional_worker_groups :
+      !contains(["worker", "master", "infra"], k) &&
+      v.count > 0 &&
+      (v.volume_size_gb != null ? v.volume_size_gb >= 120 : true)
+    ])
+    // Cannot use any of the nicer string formatting options because
+    // error_message validation is dumb, cf.
+    // https://github.com/hashicorp/terraform/issues/24123
+    error_message = "Your configuration of `additional_worker_groups` violates one of the following constraints:\n * The worker disk size cannot be smaller than 120GB.\n * Additional worker group names cannot be 'worker', 'master', or 'infra'.\n * The worker count cannot be less than 0."
+  }
+}
+
 variable "image_slug" {
   type        = string
   description = "Image to use for nodes"
