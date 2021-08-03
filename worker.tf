@@ -13,3 +13,23 @@ module "worker" {
   ignition_ca      = var.ignition_ca
   api_int          = "api-int.${local.node_name_suffix}"
 }
+
+// Additional worker groups.
+// Configured from var.additional_worker_groups
+module "additional_worker" {
+  for_each = var.additional_worker_groups
+
+  source = "./modules/node-group"
+
+  cluster_id       = var.cluster_id
+  region           = var.region
+  role             = each.key
+  node_count       = each.value.count
+  node_name_suffix = local.node_name_suffix
+  image_slug       = var.image_slug
+  flavor_slug      = each.value.flavor
+  volume_size_gb   = each.value.volume_size_gb != null ? each.value.volume_size_gb : var.worker_volume_size_gb
+  subnet_uuid      = cloudscale_subnet.privnet_subnet.id
+  ignition_ca      = var.ignition_ca
+  api_int          = "api-int.${local.node_name_suffix}"
+}
