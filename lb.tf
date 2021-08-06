@@ -2,10 +2,6 @@ resource "random_id" "lb" {
   count       = var.lb_count
   prefix      = "lb-"
   byte_length = 1
-  keepers = {
-    api_eip       = cidrhost(cloudscale_floating_ip.api_vip[0].network, 0)
-    infra_servers = join(",", module.infra.ip_addresses)
-  }
 }
 
 resource "cloudscale_server_group" "lb" {
