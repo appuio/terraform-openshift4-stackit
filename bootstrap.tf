@@ -9,7 +9,7 @@ resource "cloudscale_server" "bootstrap" {
     type = "private"
     addresses {
       address     = cidrhost(var.privnet_cidr, 10)
-      subnet_uuid = cloudscale_subnet.privnet_subnet.id
+      subnet_uuid = local.subnet_uuid
     }
   }
   user_data = <<-EOF

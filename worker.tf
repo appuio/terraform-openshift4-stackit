@@ -9,7 +9,7 @@ module "worker" {
   image_slug       = var.image_slug
   flavor_slug      = var.worker_flavor
   volume_size_gb   = var.worker_volume_size_gb
-  subnet_uuid      = cloudscale_subnet.privnet_subnet.id
+  subnet_uuid      = local.subnet_uuid
   ignition_ca      = var.ignition_ca
   api_int          = "api-int.${local.node_name_suffix}"
 }

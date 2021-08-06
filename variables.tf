@@ -30,9 +30,14 @@ variable "ssh_keys" {
   default     = []
 }
 
+variable "subnet_uuid" {
+  type        = string
+  description = "UUID of the subnet in which to create the VMs"
+}
+
 variable "privnet_cidr" {
   default     = "172.18.200.0/24"
-  description = "CIDR of the private net to use"
+  description = "CIDR of the private net to use, if the variable subnet_uuid is not set"
 }
 
 variable "bootstrap_count" {

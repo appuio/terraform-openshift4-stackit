@@ -16,7 +16,7 @@ output "node_name_suffix" {
 }
 
 output "subnet_uuid" {
-  value = cloudscale_subnet.privnet_subnet.id
+  value = local.subnet_uuid
 }
 
 output "region" {
