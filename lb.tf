@@ -121,6 +121,7 @@ resource "local_file" "lb_hieradata" {
 }
 
 data "local_file" "hieradata_mr_url" {
+  count    = var.lb_count > 0 ? 1 : 0
   filename = "${path.cwd}/.mr_url.txt"
 
   depends_on = [

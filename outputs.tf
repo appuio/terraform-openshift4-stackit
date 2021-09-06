@@ -36,5 +36,5 @@ output "api_int" {
 }
 
 output "hieradata_mr" {
-  value = data.local_file.hieradata_mr_url.content
+  value = var.lb_count > 0 ? data.local_file.hieradata_mr_url[0].content : ""
 }
