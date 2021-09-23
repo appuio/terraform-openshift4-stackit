@@ -99,7 +99,7 @@ variable "additional_worker_groups" {
     condition = alltrue([
       for k, v in var.additional_worker_groups :
       !contains(["worker", "master", "infra"], k) &&
-      v.count > 0 &&
+      v.count >= 0 &&
       (v.volume_size_gb != null ? v.volume_size_gb >= 120 : true)
     ])
     // Cannot use any of the nicer string formatting options because
