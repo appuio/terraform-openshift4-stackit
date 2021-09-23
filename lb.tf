@@ -143,7 +143,7 @@ resource "cloudscale_server" "lb" {
   }
   interfaces {
     type         = "private"
-    network_uuid = cloudscale_network.privnet.id
+    network_uuid = cloudscale_network.privnet[0].id
   }
   lifecycle {
     ignore_changes = [
