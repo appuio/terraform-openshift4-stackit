@@ -37,7 +37,7 @@ variable "subnet_uuid" {
 
 variable "privnet_cidr" {
   default     = "172.18.200.0/24"
-  description = "CIDR of the private net to use, if the variable subnet_uuid is not set"
+  description = "CIDR for the private network. This must match the CIDR of the existing subnet, if the variable subnet_uuid is set."
 }
 
 variable "bootstrap_count" {
