@@ -33,6 +33,7 @@ variable "ssh_keys" {
 variable "subnet_uuid" {
   type        = string
   description = "UUID of the subnet in which to create the VMs"
+  default     = ""
 }
 
 variable "privnet_cidr" {
