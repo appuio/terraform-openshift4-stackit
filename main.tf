@@ -1,7 +1,7 @@
 locals {
-  node_name_suffix = "${var.cluster_id}.${var.base_domain}"
+  node_name_suffix      = "${var.cluster_id}.${var.base_domain}"
   create_privnet_subnet = var.subnet_uuid == "" ? 1 : 0
-  subnet_uuid = var.subnet_uuid == "" ? cloudscale_subnet.privnet_subnet.id : var.subnet_uuid
+  subnet_uuid           = var.subnet_uuid == "" ? cloudscale_subnet.privnet_subnet.id : var.subnet_uuid
 }
 
 resource "cloudscale_network" "privnet" {
