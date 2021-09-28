@@ -29,7 +29,7 @@ module "additional_worker" {
   image_slug       = var.image_slug
   flavor_slug      = each.value.flavor
   volume_size_gb   = each.value.volume_size_gb != null ? each.value.volume_size_gb : var.worker_volume_size_gb
-  subnet_uuid      = cloudscale_subnet.privnet_subnet[0].id
+  subnet_uuid      = local.subnet_uuid
   ignition_ca      = var.ignition_ca
   api_int          = "api-int.${local.node_name_suffix}"
 }
