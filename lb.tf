@@ -5,7 +5,7 @@ module "lb" {
   cluster_id             = var.cluster_id
   region                 = var.region
   ssh_keys               = var.ssh_keys
-  privnet_id             = cloudscale_network.privnet[0].id
+  privnet_id             = local.privnet_uuid
   lb_count               = var.lb_count
   control_vshn_net_token = var.control_vshn_net_token
 

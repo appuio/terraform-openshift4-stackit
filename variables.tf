@@ -36,6 +36,12 @@ variable "subnet_uuid" {
   default     = ""
 }
 
+variable "privnet_uuid" {
+  type        = string
+  description = "UUID of an existing private network. If provided, variables `privnet_cidr` and `subnet_uuid` must be set to point to a subnet which is part of the provided private network."
+  default     = ""
+}
+
 variable "privnet_cidr" {
   default     = "172.18.200.0/24"
   description = "CIDR for the private network. This must match the CIDR of the existing subnet, if the variable subnet_uuid is set."
