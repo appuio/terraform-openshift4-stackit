@@ -1,7 +1,6 @@
 module "worker" {
   source = "./modules/node-group"
 
-  cluster_id       = var.cluster_id
   region           = var.region
   role             = "worker"
   node_count       = var.worker_count
@@ -21,7 +20,6 @@ module "additional_worker" {
 
   source = "./modules/node-group"
 
-  cluster_id       = var.cluster_id
   region           = var.region
   role             = each.key
   node_count       = each.value.count

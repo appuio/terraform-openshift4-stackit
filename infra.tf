@@ -1,7 +1,6 @@
 module "infra" {
   source = "./modules/node-group"
 
-  cluster_id       = var.cluster_id
   region           = var.region
   role             = "infra"
   node_count       = var.infra_count

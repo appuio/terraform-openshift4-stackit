@@ -23,11 +23,6 @@ variable "region" {
   description = "Region where to deploy nodes"
 }
 
-variable "cluster_id" {
-  type        = string
-  description = "ID of the cluster"
-}
-
 variable "flavor_slug" {
   type        = string
   description = "Flavor to use for nodes"
