@@ -1,7 +1,6 @@
 module "master" {
   source = "./modules/node-group"
 
-  cluster_id       = var.cluster_id
   region           = var.region
   role             = "master"
   ignition_config  = "master"
