@@ -119,7 +119,7 @@ variable "additional_worker_groups" {
 variable "image_slug" {
   type        = string
   description = "Image to use for nodes"
-  default     = "custom:rhcos-4.8"
+  default     = "custom:rhcos-4.9"
 }
 
 variable "lb_cloudscale_api_secret" {
