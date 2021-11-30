@@ -1,6 +1,12 @@
 variable "cluster_id" {
   type        = string
-  description = "ID of the cluster"
+  description = "Project Syn ID of the cluster"
+}
+
+variable "cluster_name" {
+  type        = string
+  description = "User-facing name of the cluster. If left empty, cluster_id will be used as cluster_name"
+  default     = ""
 }
 
 variable "ignition_bootstrap" {
