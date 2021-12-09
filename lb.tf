@@ -16,4 +16,5 @@ module "lb" {
   lb_cloudscale_api_secret = var.lb_cloudscale_api_secret
   hieradata_repo_user      = var.hieradata_repo_user
   internal_vip             = cidrhost(var.privnet_cidr, 100)
+  enable_proxy_protocol    = var.lb_enable_proxy_protocol
 }
