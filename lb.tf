@@ -1,5 +1,5 @@
 module "lb" {
-  source = "git::https://github.com/appuio/terraform-modules.git//modules/vshn-lbaas-cloudscale?ref=v2.1.0"
+  source = "git::https://github.com/appuio/terraform-modules.git//modules/vshn-lbaas-cloudscale?ref=v2.2.0"
 
   node_name_suffix       = local.node_name_suffix
   cluster_id             = var.cluster_id
@@ -16,4 +16,5 @@ module "lb" {
   lb_cloudscale_api_secret = var.lb_cloudscale_api_secret
   hieradata_repo_user      = var.hieradata_repo_user
   internal_vip             = cidrhost(var.privnet_cidr, 100)
+  enable_proxy_protocol    = var.lb_enable_proxy_protocol
 }
