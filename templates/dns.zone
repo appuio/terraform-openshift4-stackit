@@ -12,7 +12,3 @@ ${lb_hostnames[i]} IN A     ${addr}
 %{ for i, addr in masters ~}
 etcd-${i} IN A     ${addr}
 %{ endfor ~}
-
-%{ for i, addr in masters ~}
-_etcd-server-ssl._tcp IN SRV 0 10 2380 etcd-${i}
-%{ endfor ~}
