@@ -3,6 +3,7 @@ output "dns_entries" {
     "node_name_suffix" = local.node_name_suffix,
     "api_vip"          = var.lb_count != 0 ? split("/", module.lb.api_vip[0].network)[0] : ""
     "router_vip"       = var.lb_count != 0 ? split("/", module.lb.router_vip[0].network)[0] : ""
+    "egress_vip"       = var.lb_count != 0 ? split("/", module.lb.nat_vip[0].network)[0] : ""
     "internal_vip"     = cidrhost(var.privnet_cidr, 100),
     "masters"          = module.master.ip_addresses,
     "cluster_id"       = var.cluster_id,
