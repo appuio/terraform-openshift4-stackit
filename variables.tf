@@ -38,13 +38,7 @@ variable "ssh_keys" {
 
 variable "subnet_uuid" {
   type        = string
-  description = "UUID of the subnet in which to create the VMs"
-  default     = ""
-}
-
-variable "privnet_uuid" {
-  type        = string
-  description = "UUID of an existing private network. If provided, variables `privnet_cidr` and `subnet_uuid` must be set to point to a subnet which is part of the provided private network."
+  description = "UUID of an existing subnet. If provided, the variable `privnet_cidr` is ignored and the CIDR of the provided network is used."
   default     = ""
 }
 
