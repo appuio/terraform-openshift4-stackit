@@ -6,7 +6,7 @@ api-int   IN A     ${internal_vip}
 ingress   IN A     ${router_vip}
 egress    IN A     ${egress_vip}
 
-*.apps    IN CNAME ingress.${node_name_suffix}
+*.apps    IN CNAME ingress.${node_name_suffix}.
 
 %{ for i, addr in lbs ~}
 ${lb_hostnames[i]} IN A     ${addr}
