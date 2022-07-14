@@ -26,7 +26,7 @@ variable "region" {
 variable "flavor_slug" {
   type        = string
   description = "Flavor to use for nodes"
-  default     = "plus-16"
+  default     = "plus-16-4"
 }
 
 variable "image_slug" {

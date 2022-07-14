@@ -70,7 +70,7 @@ variable "infra_count" {
 
 variable "infra_flavor" {
   type        = string
-  default     = "plus-16"
+  default     = "plus-16-4"
   description = "Flavor to use for infra nodes"
 }
 
@@ -88,7 +88,7 @@ variable "worker_count" {
 
 variable "worker_flavor" {
   type        = string
-  default     = "plus-16"
+  default     = "plus-16-4"
   description = "Flavor to use for worker nodes"
 }
 
