@@ -62,6 +62,12 @@ variable "master_count" {
   default = 3
 }
 
+variable "master_flavor" {
+  type        = string
+  default     = "plus-16-4"
+  description = "Flavor to use for master nodes"
+}
+
 variable "infra_count" {
   type        = number
   default     = 3
