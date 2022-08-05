@@ -57,9 +57,21 @@ variable "lb_count" {
   default = 2
 }
 
+variable "lb_flavor" {
+  type        = string
+  default     = "plus-8-2"
+  description = "Compute flavor to use for loadbalancers"
+}
+
 variable "master_count" {
   type    = number
   default = 3
+}
+
+variable "master_flavor" {
+  type        = string
+  default     = "plus-16-4"
+  description = "Flavor to use for master nodes"
 }
 
 variable "infra_count" {
