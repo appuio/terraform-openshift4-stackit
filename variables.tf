@@ -76,7 +76,7 @@ variable "master_flavor" {
 
 variable "infra_count" {
   type        = number
-  default     = 3
+  default     = 4
   description = "Number of infra nodes"
 }
 
