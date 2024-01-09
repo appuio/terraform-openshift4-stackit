@@ -3,7 +3,7 @@ terraform {
   required_providers {
     cloudscale = {
       source  = "cloudscale-ch/cloudscale"
-      version = "4.0.0"
+      version = "4.2.2"
     }
     null = {
       source  = "hashicorp/null"
