@@ -5,6 +5,7 @@ locals {
   subnet_uuid           = var.subnet_uuid == "" ? cloudscale_subnet.privnet_subnet[0].id : var.subnet_uuid
   privnet_uuid          = local.create_privnet_subnet > 0 ? cloudscale_network.privnet[0].id : data.cloudscale_subnet.privnet_subnet[0].network_uuid
   privnet_cidr          = local.create_privnet_subnet > 0 ? var.privnet_cidr : data.cloudscale_subnet.privnet_subnet[0].cidr
+  worker_volume_size_gb = var.worker_volume_size_gb == 0 ? var.default_volume_size_gb : var.worker_volume_size_gb
 }
 
 resource "cloudscale_network" "privnet" {

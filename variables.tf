@@ -104,10 +104,16 @@ variable "worker_flavor" {
   description = "Flavor to use for worker nodes"
 }
 
+variable "default_volume_size_gb" {
+  type        = number
+  description = "Default boot volume size in GBs"
+  default     = 100
+}
+
 variable "worker_volume_size_gb" {
   type        = number
   description = "Worker boot volume size in GBs"
-  default     = 128
+  default     = 0
 }
 
 variable "additional_worker_groups" {
@@ -119,12 +125,12 @@ variable "additional_worker_groups" {
       for k, v in var.additional_worker_groups :
       !contains(["worker", "master", "infra"], k) &&
       v.count >= 0 &&
-      (v.volume_size_gb != null ? v.volume_size_gb >= 120 : true)
+      (v.volume_size_gb != null ? v.volume_size_gb >= 100 : true)
     ])
     // Cannot use any of the nicer string formatting options because
     // error_message validation is dumb, cf.
     // https://github.com/hashicorp/terraform/issues/24123
-    error_message = "Your configuration of `additional_worker_groups` violates one of the following constraints:\n * The worker disk size cannot be smaller than 120GB.\n * Additional worker group names cannot be 'worker', 'master', or 'infra'.\n * The worker count cannot be less than 0."
+    error_message = "Your configuration of `additional_worker_groups` violates one of the following constraints:\n * The worker disk size cannot be smaller than 100GB.\n * Additional worker group names cannot be 'worker', 'master', or 'infra'.\n * The worker count cannot be less than 0."
   }
 }
 

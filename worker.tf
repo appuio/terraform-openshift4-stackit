@@ -7,7 +7,7 @@ module "worker" {
   node_name_suffix = local.node_name_suffix
   image_slug       = var.image_slug
   flavor_slug      = var.worker_flavor
-  volume_size_gb   = var.worker_volume_size_gb
+  volume_size_gb   = local.worker_volume_size_gb
   subnet_uuid      = local.subnet_uuid
   ignition_ca      = var.ignition_ca
   api_int          = "api-int.${local.node_name_suffix}"
@@ -26,7 +26,7 @@ module "additional_worker" {
   node_name_suffix = local.node_name_suffix
   image_slug       = var.image_slug
   flavor_slug      = each.value.flavor
-  volume_size_gb   = each.value.volume_size_gb != null ? each.value.volume_size_gb : var.worker_volume_size_gb
+  volume_size_gb   = each.value.volume_size_gb != null ? each.value.volume_size_gb : local.worker_volume_size_gb
   subnet_uuid      = local.subnet_uuid
   ignition_ca      = var.ignition_ca
   api_int          = "api-int.${local.node_name_suffix}"

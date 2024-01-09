@@ -37,7 +37,7 @@ variable "image_slug" {
 variable "volume_size_gb" {
   type        = number
   description = "Boot volume size in GBs"
-  default     = 128
+  default     = 100
 }
 
 variable "ignition_ca" {
