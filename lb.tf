@@ -13,7 +13,7 @@ module "lb" {
   additional_networks    = var.additional_lb_networks
   use_existing_vips      = var.use_existing_vips
 
-  router_backends          = module.infra.ip_addresses[*]
+  router_backends          = var.infra_count > 0 ? module.infra.ip_addresses[*] : module.worker.ip_addresses[*]
   bootstrap_node           = var.bootstrap_count > 0 ? cidrhost(var.privnet_cidr, 10) : ""
   lb_cloudscale_api_secret = var.lb_cloudscale_api_secret
   hieradata_repo_user      = var.hieradata_repo_user
