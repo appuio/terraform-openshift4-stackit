@@ -1,10 +1,16 @@
 ; Cluster ${cluster_id}
 $ORIGIN ${node_name_suffix}.
 
-api       IN A     ${api_vip}
-api-int   IN A     ${internal_vip}
-ingress   IN A     ${router_vip}
-egress    IN A     ${egress_vip}
+%{ if api_vip != "" ~}
+api         IN A     ${api_vip}
+%{ endif ~}
+api-int     IN A     ${internal_vip}
+%{ if router_vip != "" ~}
+ingress     IN A     ${router_vip}
+%{ endif ~}
+%{ if egress_vip != "" ~}
+egress      IN A     ${egress_vip}
+%{ endif ~}
 
 *.apps    IN CNAME ingress.${node_name_suffix}.
 
