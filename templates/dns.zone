@@ -8,6 +8,9 @@ api-int     IN A     ${internal_vip}
 %{ if router_vip != "" ~}
 ingress     IN A     ${router_vip}
 %{ endif ~}
+%{ if internal_router_vip != "" ~}
+ingress-int IN A     ${internal_router_vip}
+%{ endif ~}
 %{ if egress_vip != "" ~}
 egress      IN A     ${egress_vip}
 %{ endif ~}
