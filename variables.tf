@@ -193,3 +193,15 @@ variable "enable_nat_vip" {
   description = "Whether to configure a cloudscale floating IP for the default gateway NAT"
   default     = true
 }
+
+variable "internal_vip" {
+  type        = string
+  description = "Custom internal floating IP for the API. Users must provide an IP that's within the final privnet CIDR."
+  default     = ""
+}
+
+variable "internal_router_vip" {
+  type        = string
+  description = "Custom internal floating IP for the router. Users must provide an IP that's within the final privnet CIDR."
+  default     = ""
+}
