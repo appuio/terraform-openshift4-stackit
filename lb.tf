@@ -12,11 +12,14 @@ module "lb" {
   team                   = var.team
   additional_networks    = var.additional_lb_networks
   use_existing_vips      = var.use_existing_vips
+  enable_api_vip         = var.enable_api_vip
+  enable_router_vip      = var.enable_router_vip
+  enable_nat_vip         = var.enable_nat_vip
 
   router_backends          = var.infra_count > 0 ? module.infra.ip_addresses[*] : module.worker.ip_addresses[*]
-  bootstrap_node           = var.bootstrap_count > 0 ? cidrhost(var.privnet_cidr, 10) : ""
+  bootstrap_node           = var.bootstrap_count > 0 ? cidrhost(local.privnet_cidr, 10) : ""
   lb_cloudscale_api_secret = var.lb_cloudscale_api_secret
   hieradata_repo_user      = var.hieradata_repo_user
-  internal_vip             = cidrhost(var.privnet_cidr, 100)
+  internal_vip             = cidrhost(local.privnet_cidr, 100)
   enable_proxy_protocol    = var.lb_enable_proxy_protocol
 }
