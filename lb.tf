@@ -20,6 +20,7 @@ module "lb" {
   bootstrap_node           = var.bootstrap_count > 0 ? cidrhost(local.privnet_cidr, 10) : ""
   lb_cloudscale_api_secret = var.lb_cloudscale_api_secret
   hieradata_repo_user      = var.hieradata_repo_user
-  internal_vip             = cidrhost(local.privnet_cidr, 100)
+  internal_vip             = local.internal_vip
+  internal_router_vip      = var.internal_router_vip
   enable_proxy_protocol    = var.lb_enable_proxy_protocol
 }
