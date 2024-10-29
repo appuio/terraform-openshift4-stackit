@@ -30,6 +30,12 @@ resource "cloudscale_server" "node" {
       subnet_uuid = var.subnet_uuid
     }
   }
+
+  tags = var.make_adoptable_by_provider ? {
+    "machine-api-provider-cloudscale_appuio_io_name" : random_id.node[count.index].hex
+    } : {
+  }
+
   user_data = <<-EOF
     {
       "ignition": {

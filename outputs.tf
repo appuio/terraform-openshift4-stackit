@@ -40,3 +40,39 @@ output "api_int" {
 output "hieradata_mr" {
   value = module.lb.hieradata_mr_url
 }
+
+output "master-machines_yml" {
+  value = var.make_master_adoptable_by_provider ? module.master.machine_yml : null
+}
+
+output "master-machineset_yml" {
+  value = var.make_master_adoptable_by_provider ? module.master.machineset_yml : null
+}
+
+output "infra-machines_yml" {
+  value = var.make_worker_adoptable_by_provider ? module.infra.machine_yml : null
+}
+
+output "infra-machineset_yml" {
+  value = var.make_worker_adoptable_by_provider ? module.infra.machineset_yml : null
+}
+
+output "worker-machines_yml" {
+  value = var.make_worker_adoptable_by_provider ? module.worker.machine_yml : null
+}
+
+output "worker-machineset_yml" {
+  value = var.make_worker_adoptable_by_provider ? module.worker.machineset_yml : null
+}
+
+output "additional-worker-machines_yml" {
+  value = var.make_worker_adoptable_by_provider && length(module.additional_worker) > 0 ? {
+    "apiVersion" = "v1",
+    "kind"       = "List",
+    "items"      = flatten(values(module.additional_worker)[*].machines)
+  } : null
+}
+
+output "additional-worker-machinesets_yml" {
+  value = var.make_worker_adoptable_by_provider && length(module.additional_worker) > 0 ? join("\n---\n", values(module.additional_worker)[*].machineset_yml) : null
+}

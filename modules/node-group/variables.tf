@@ -55,3 +55,14 @@ variable "api_int" {
   type        = string
   description = "Hostname of the internal API (to be used for the ignition endpoint)"
 }
+
+variable "cluster_id" {
+  type        = string
+  description = "ID of the cluster to which the nodes belong, used for rendering machines and  machine sets"
+}
+
+variable "make_adoptable_by_provider" {
+  type        = bool
+  description = "Whether to make the nodes adoptable by https://github.com/appuio/machine-api-provider-cloudscale"
+  default     = false
+}

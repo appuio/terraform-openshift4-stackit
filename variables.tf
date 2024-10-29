@@ -205,3 +205,15 @@ variable "internal_router_vip" {
   description = "Custom internal floating IP for the router. Users must provide an IP that's within the final privnet CIDR."
   default     = ""
 }
+
+variable "make_worker_adoptable_by_provider" {
+  type        = bool
+  description = "Whether to make the worker nodes adoptable by https://github.com/appuio/machine-api-provider-cloudscale"
+  default     = false
+}
+
+variable "make_master_adoptable_by_provider" {
+  type        = bool
+  description = "Whether to make the master nodes adoptable by https://github.com/appuio/machine-api-provider-cloudscale"
+  default     = false
+}
