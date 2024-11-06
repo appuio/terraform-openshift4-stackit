@@ -66,13 +66,13 @@ output "worker-machineset_yml" {
 }
 
 output "additional-worker-machines_yml" {
-  value = var.make_worker_adoptable_by_provider && length(module.additional_worker) > 0 ? {
+  value = var.make_worker_adoptable_by_provider ? yamlencode({
     "apiVersion" = "v1",
     "kind"       = "List",
     "items"      = flatten(values(module.additional_worker)[*].machines)
-  } : null
+  }) : null
 }
 
 output "additional-worker-machinesets_yml" {
-  value = var.make_worker_adoptable_by_provider && length(module.additional_worker) > 0 ? join("\n---\n", values(module.additional_worker)[*].machineset_yml) : null
+  value = var.make_worker_adoptable_by_provider ? join("\n---\n", values(module.additional_worker)[*].machineset_yml) : null
 }

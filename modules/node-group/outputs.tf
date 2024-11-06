@@ -49,6 +49,7 @@ locals {
       "kind"       = "Machine"
       "metadata" = {
         "name"        = id.hex
+        "namespace"   = "openshift-machine-api"
         "annotations" = {}
         "labels" = {
           "machine.openshift.io/cluster-api-cluster"    = var.cluster_id
