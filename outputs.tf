@@ -1,23 +1,8 @@
-output "dns_entries" {
-  value = templatefile("${path.module}/templates/dns.zone", {
-    "node_name_suffix"    = local.node_name_suffix,
-    "api_vip"             = var.enable_api_vip && var.lb_count != 0 ? split("/", module.lb.api_vip[0].network)[0] : ""
-    "router_vip"          = var.enable_router_vip && var.lb_count != 0 ? split("/", module.lb.router_vip[0].network)[0] : ""
-    "egress_vip"          = var.enable_nat_vip && var.lb_count != 0 ? split("/", module.lb.nat_vip[0].network)[0] : ""
-    "internal_vip"        = local.internal_vip,
-    "internal_router_vip" = var.internal_router_vip,
-    "masters"             = module.master.ip_addresses,
-    "cluster_id"          = var.cluster_id,
-    "lbs"                 = module.lb.public_ipv4_addresses,
-    "lb_hostnames"        = module.lb.server_names
-  })
-}
-
 output "node_name_suffix" {
   value = local.node_name_suffix
 }
 
-output "subnet_uuid" {
+output "network_id" {
   value = local.subnet_uuid
 }
 
@@ -37,42 +22,25 @@ output "api_int" {
   value = "api-int.${local.node_name_suffix}"
 }
 
-output "hieradata_mr" {
-  value = module.lb.hieradata_mr_url
+output "dns_nameserver" {
+  value = stackit_dns_zone.cluster_dns_zone.primary_name_server
 }
 
-output "master-machines_yml" {
-  value = var.make_master_adoptable_by_provider ? module.master.machine_yml : null
-}
+# NOTE(aa): The STACKIT terraform provider only provides us a single NS for a DNS zone (the primary NS).
+#  However, they currently operate two NS and recommend adding both of them for delegation.
+#  I have thus decided to statically include their second NS here.
+output "ns_records" {
+  value = <<EOF
 
-output "master-machineset_yml" {
-  value = var.make_master_adoptable_by_provider ? module.master.machineset_yml : null
-}
+; Add these records in the ${var.base_domain} zone file.
+;
+; If ${var.base_domain} is a subdomain of one of your zones, you'll need to
+; adjust the labels of records below to the form
+; '${local.cluster_name}.<subdomain>'.
+;
+; Delegate  ${var.cluster_id}'s subdomain to STACKIT
+${local.cluster_name}  IN  NS     ${stackit_dns_zone.cluster_dns_zone.primary_name_server}.
+${local.cluster_name}  IN  NS     ns2.stackit.cloud.
 
-output "infra-machines_yml" {
-  value = var.make_worker_adoptable_by_provider ? module.infra.machine_yml : null
-}
-
-output "infra-machineset_yml" {
-  value = var.make_worker_adoptable_by_provider ? module.infra.machineset_yml : null
-}
-
-output "worker-machines_yml" {
-  value = var.make_worker_adoptable_by_provider ? module.worker.machine_yml : null
-}
-
-output "worker-machineset_yml" {
-  value = var.make_worker_adoptable_by_provider ? module.worker.machineset_yml : null
-}
-
-output "additional-worker-machines_yml" {
-  value = var.make_worker_adoptable_by_provider ? yamlencode({
-    "apiVersion" = "v1",
-    "kind"       = "List",
-    "items"      = flatten(values(module.additional_worker)[*].machines)
-  }) : null
-}
-
-output "additional-worker-machinesets_yml" {
-  value = var.make_worker_adoptable_by_provider ? join("\n---\n", values(module.additional_worker)[*].machineset_yml) : null
+EOF
 }

@@ -1,16 +1,13 @@
-resource "cloudscale_server" "bootstrap" {
-  count          = var.bootstrap_count
-  name           = "bootstrap.${local.node_name_suffix}"
-  zone_slug      = "${var.region}1"
-  flavor_slug    = "flex-16-4"
-  image_slug     = var.image_slug
-  volume_size_gb = 128
-  interfaces {
-    type = "private"
-    addresses {
-      address     = cidrhost(local.privnet_cidr, 10)
-      subnet_uuid = local.subnet_uuid
-    }
+resource "stackit_server" "bootstrap" {
+  count        = var.bootstrap_count
+  project_id   = var.stackit_project_id
+  name         = "bootstrap.${local.node_name_suffix}"
+  machine_type = "g2i.4"
+  keypair_name = local.ssh_key_name
+  boot_volume = {
+    size        = 128
+    source_type = "image"
+    source_id   = var.image_id
   }
   user_data = <<-EOF
     {
@@ -23,17 +20,25 @@ resource "cloudscale_server" "bootstrap" {
                     }
                 ]
             }
-        },
-        "systemd": {
-            "units": [{
-                "name": "cloudscale-hostkeys.service",
-                "enabled": true,
-                "contents": "[Unit]\nDescription=Print SSH Public Keys to tty\nAfter=sshd-keygen.target\n\n[Install]\nWantedBy=multi-user.target\n\n[Service]\nType=oneshot\nStandardOutput=tty\nTTYPath=/dev/ttyS0\nExecStart=/bin/sh -c \"echo '-----BEGIN SSH HOST KEY KEYS-----'; cat /etc/ssh/ssh_host_*key.pub; echo '-----END SSH HOST KEY KEYS-----'\""
-            }]
         }
     }
     EOF
-  depends_on = [
-    module.lb.public_ipv4_addresses,
-  ]
+}
+
+resource "stackit_network_interface" "bootstrap_nic" {
+  count              = var.bootstrap_count
+  project_id         = var.stackit_project_id
+  network_id         = local.subnet_uuid
+  security_group_ids = [stackit_security_group.cluster_sg.security_group_id]
+  ipv4               = cidrhost(local.privnet_cidr, 10)
+  lifecycle {
+    ignore_changes = [security_group_ids]
+  }
+}
+
+resource "stackit_server_network_interface_attach" "bootstrap-nic-attach" {
+  count                = var.bootstrap_count
+  project_id           = var.stackit_project_id
+  server_id            = stackit_server.bootstrap[count.index].server_id
+  network_interface_id = stackit_network_interface.bootstrap_nic[count.index].network_interface_id
 }

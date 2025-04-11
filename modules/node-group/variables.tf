@@ -3,9 +3,19 @@ variable "role" {
   description = "Role of the nodes to be provisioned"
 }
 
+variable "stackit_project_id" {
+  type        = string
+  description = "ID of the STACKIT project in which to deploy the nodes"
+}
+
 variable "node_count" {
   type        = number
   description = "Number of nodes to provision"
+}
+
+variable "ssh_key_name" {
+  type        = string
+  description = "Name of the STACKIT SSH keypair to use"
 }
 
 variable "node_name_suffix" {
@@ -13,9 +23,14 @@ variable "node_name_suffix" {
   description = "Suffix to use for node names"
 }
 
-variable "subnet_uuid" {
+variable "network_id" {
   type        = string
-  description = "UUID of the subnet in which to create the nodes"
+  description = "ID of the network in which to create the nodes"
+}
+
+variable "security_group_ids" {
+  type        = list(string)
+  description = "List of Security Group IDs to attach to the nodes"
 }
 
 variable "region" {
@@ -23,13 +38,13 @@ variable "region" {
   description = "Region where to deploy nodes"
 }
 
-variable "flavor_slug" {
+variable "machine_type" {
   type        = string
-  description = "Flavor to use for nodes"
-  default     = "plus-16-4"
+  description = "Machine type to use for nodes"
+  default     = "g2i.4"
 }
 
-variable "image_slug" {
+variable "image_id" {
   type        = string
   description = "Image to use for nodes"
 }
@@ -59,10 +74,4 @@ variable "api_int" {
 variable "cluster_id" {
   type        = string
   description = "ID of the cluster to which the nodes belong, used for rendering machines and  machine sets"
-}
-
-variable "make_adoptable_by_provider" {
-  type        = bool
-  description = "Whether to make the nodes adoptable by https://github.com/appuio/machine-api-provider-cloudscale"
-  default     = false
 }

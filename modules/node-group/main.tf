@@ -1,42 +1,20 @@
-locals {
-  anti_affinity_capacity    = 4
-  anti_affinity_group_count = ceil(var.node_count / local.anti_affinity_capacity)
-}
-
 resource "random_id" "node" {
   count       = var.node_count
   prefix      = "${var.role}-"
   byte_length = 2
 }
 
-resource "cloudscale_server_group" "nodes" {
-  count     = var.node_count != 0 ? local.anti_affinity_group_count : 0
-  name      = "${var.role}-group"
-  type      = "anti-affinity"
-  zone_slug = "${var.region}1"
-}
-
-resource "cloudscale_server" "node" {
-  count            = var.node_count
-  name             = "${random_id.node[count.index].hex}.${var.node_name_suffix}"
-  zone_slug        = "${var.region}1"
-  flavor_slug      = var.flavor_slug
-  image_slug       = var.image_slug
-  server_group_ids = var.node_count != 0 ? [cloudscale_server_group.nodes[floor(count.index / local.anti_affinity_capacity)].id] : []
-  volume_size_gb   = var.volume_size_gb
-  interfaces {
-    type = "private"
-    addresses {
-      subnet_uuid = var.subnet_uuid
-    }
+resource "stackit_server" "node" {
+  count        = var.node_count
+  project_id   = var.stackit_project_id
+  name         = "${random_id.node[count.index].hex}.${var.node_name_suffix}"
+  machine_type = var.machine_type
+  keypair_name = var.ssh_key_name
+  boot_volume = {
+    size        = var.volume_size_gb
+    source_type = "image"
+    source_id   = var.image_id
   }
-
-  tags = var.make_adoptable_by_provider ? {
-    "machine-api-provider-cloudscale_appuio_io_name" : random_id.node[count.index].hex,
-    "machine-api-provider-cloudscale_appuio_io_cluster_id" : var.cluster_id,
-    } : {
-  }
-
   user_data = <<-EOF
     {
       "ignition": {
@@ -54,32 +32,34 @@ resource "cloudscale_server" "node" {
           }
         }
       },
-      "systemd": {
-        "units": [{
-          "name": "cloudscale-hostkeys.service",
-          "enabled": true,
-          "contents": "[Unit]\nDescription=Print SSH Public Keys to tty\nAfter=sshd-keygen.target\n\n[Install]\nWantedBy=multi-user.target\n\n[Service]\nType=oneshot\nStandardOutput=tty\nTTYPath=/dev/ttyS0\nExecStart=/bin/sh -c \"echo '-----BEGIN SSH HOST KEY KEYS-----'; cat /etc/ssh/ssh_host_*key.pub; echo '-----END SSH HOST KEY KEYS-----'\""
-          }]
-      },
       "storage": {
-        "files": [{
-          "filesystem": "root",
-          "path": "/etc/hostname",
-          "mode": 420,
-          "contents": {
-              "source": "data:,${random_id.node[count.index].hex}"
+        "files": [
+          {
+            "path": "/etc/hostname",
+            "mode": 420,
+            "contents": {
+              "source": "data:text/plain;charset=utf-8;base64,${base64encode("${random_id.node[count.index].hex}.${var.node_name_suffix}")}"
+            }
           }
-        }]
+        ]
       }
     }
     EOF
+}
 
+resource "stackit_network_interface" "nic" {
+  count              = var.node_count
+  project_id         = var.stackit_project_id
+  network_id         = var.network_id
+  security_group_ids = var.security_group_ids
   lifecycle {
-    ignore_changes = [
-      skip_waiting_for_ssh_host_keys,
-      image_slug,
-      user_data,
-      volume_size_gb,
-    ]
+    ignore_changes = [security_group_ids]
   }
+}
+
+resource "stackit_server_network_interface_attach" "nic-attach" {
+  count                = var.node_count
+  project_id           = var.stackit_project_id
+  server_id            = stackit_server.node[count.index].server_id
+  network_interface_id = stackit_network_interface.nic[count.index].network_interface_id
 }
